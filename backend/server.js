@@ -4,6 +4,7 @@ import "dotenv/config";
 import connectDB from "./config/mongodb.js";
 import userRouter from "./routes/userRoutes.js";
 import connectCloudinary from "./config/cloudinary.js";
+import productRouter from "./routes/productRoutes.js";
 
 // app conig
 
@@ -17,6 +18,7 @@ app.use(express.json());
 
 // api endpoints
 app.use("/api/user", userRouter);
+app.use("/api/product", productRouter);
 app.get("/", (req, res) => {
   res.send("Welcome to the backend server!");
 });

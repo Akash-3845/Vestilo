@@ -7,7 +7,37 @@ const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET);
 };
 // Route for userlogin
-const loginUser = async (req, res) => {};
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check if user exists
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "User does not exist",
+      });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (isMatch) {
+      const token = createToken(user._id);
+      res.status(200).json({
+        success: true,
+        message: "User logged in successfully",
+        token,
+      });
+    } else {
+      res.json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
 
 // Route for user Registration
 const registerUser = async (req, res) => {
