@@ -1,9 +1,89 @@
-import React from 'react'
+import { React, useState, useEffect } from "react";
+import axios from "axios";
+import { backendUrl, currency } from "../App";
+import { toast } from "react-toastify";
 
-const List = () => {
+import { RiDeleteBinLine } from "react-icons/ri";
+const List = ({ token }) => {
+  const [list, setList] = useState([]);
+
+  const fetchList = async () => {
+    try {
+      const response = await axios.get(backendUrl + "/api/product/list");
+      if (response.data.success) {
+        const sortedProducts = response.data.products.sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+        setList(sortedProducts);
+      } else {
+        toast.error(response.data.message || "Failed to fetch product list.");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+  const removeProduct = async (id) => {
+    try {
+      const response = await axios.post(
+        backendUrl + "/api/product/remove",
+        { id },
+        { headers: { token } }
+      );
+      if (response.data.success) {
+        toast.success(response.data.message);
+        fetchList(); // Refresh the list after deletion
+      } else {
+        toast.error(response.data.message || "Failed to delete product.");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+  useEffect(() => {
+    fetchList();
+  }, []);
+
   return (
-    <div>List</div>
-  )
-}
+    <>
+      <p className="mb-2">All Products List</p>
+      <div className="flex flex-col gap-2">
+        {/* List table title */}
+        <div className="hidden md:grid grid-cols-[1fr_3fr_1fr_1fr_1fr] items-center py-1 px-2 bg-gray-100 text-sm">
+          <b>Image</b>
+          <b>Name</b>
+          <b>Category</b>
+          <b>Price</b>
+          <b className="text-center">Action</b>
+        </div>
 
-export default List
+        {/* Product List */}
+
+        {list.map((item, index) => (
+          <div
+            className="grid md:grid-cols-[1fr_3fr_1fr_1fr_1fr] grid-cols-[1fr_3fr_1fr] items-center gap-2 border py-1 px-2 text-sm "
+            key={index}
+          >
+            <img className="w-12" src={item.image[0]} alt="" />
+            <p>{item.name}</p>
+            <p>{item.category}</p>
+            <p>
+              {currency}
+              {item.price}{" "}
+            </p>
+
+            <p
+              onClick={() => removeProduct(item._id)}
+              className="text-right px-15 md:text-center cursor-pointer text-lg"
+            >
+              <RiDeleteBinLine />
+            </p>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+};
+
+export default List;
