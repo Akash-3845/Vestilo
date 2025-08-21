@@ -43,7 +43,7 @@ const Collection = () => {
     }
     if (subCategory.length > 0) {
       productsCopy = productsCopy.filter((item) =>
-        subCategory.includes(item.subCategory)
+        subCategory.includes(item.subcategory)
       );
     }
     setFilterProducts(productsCopy);
@@ -66,11 +66,13 @@ const Collection = () => {
 
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory, search, showSearch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, subCategory, search, showSearch, products]);
 
   useEffect(() => {
     sortProducts();
-  }, [sortType]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [products]);
 
   return (
     <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
