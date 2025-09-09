@@ -6,6 +6,7 @@ import userRouter from "./routes/userRoutes.js";
 import connectCloudinary from "./config/cloudinary.js";
 import productRouter from "./routes/productRoutes.js";
 import cartRouter from "./routes/cartRoutes.js";
+import orderRouter from "./routes/orderRoute.js";
 
 // app conig
 
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use("/api/user", userRouter);
 app.use("/api/product", productRouter);
 app.use("/api/cart", cartRouter);
+app.use("/api/order", orderRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the backend server!");

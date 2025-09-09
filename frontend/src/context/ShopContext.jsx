@@ -134,14 +134,16 @@ const ShopContextProvider = (props) => {
   };
   useEffect(() => {
     getProductsData();
-  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
 
   useEffect(() => {
     if (!token && localStorage.getItem("token")) {
       setToken(localStorage.getItem("token"));
       getUserCart(localStorage.getItem("token"));
     }
-  }, [token]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const value = {
     products,
     currency,
@@ -156,6 +158,7 @@ const ShopContextProvider = (props) => {
     updateQuantity,
     getCartAmount,
     navigate,
+    setCartItems,
     backendUrl,
     token,
     setToken,
