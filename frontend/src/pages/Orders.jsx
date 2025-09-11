@@ -20,24 +20,42 @@ const Orders = () => {
         {},
         { headers: { token } }
       );
+
       if (response.data.success) {
-        let allOrderItems = [];
-        response.data.orders.map((order) => {
-          order.items.map((item) => {
-            item["status"] = order.status;
-            item["payment"] = order.payment;
-            item["paymentMethod"] = order.paymentMethod;
-            item["date"] = order.date;
-            allOrderItems.push(item);
+        let groupedOrders = {};
+
+        response.data.orders.forEach((order) => {
+          order.items.forEach((item) => {
+            const key = `${item._id}-${item.name}`; // unique key per product
+
+            if (!groupedOrders[key]) {
+              groupedOrders[key] = {
+                ...item,
+                status: order.status,
+                payment: order.payment,
+                paymentMethod: order.paymentMethod,
+                date: order.date,
+                quantity: item.quantity,
+                sizes: [item.size],
+              };
+            } else {
+              // If product already exists, update quantity and sizes
+              groupedOrders[key].quantity += item.quantity;
+              if (!groupedOrders[key].sizes.includes(item.size)) {
+                groupedOrders[key].sizes.push(item.size);
+              }
+            }
           });
         });
-        setOrderData(allOrderItems);
+
+        setOrderData(Object.values(groupedOrders));
       }
     } catch (error) {
       console.log(error);
       toast.error(error.message);
     }
   };
+
   useEffect(() => {
     loadOrderData();
   }, [token]);
@@ -64,10 +82,10 @@ const Orders = () => {
                 <div className="flex items-center text-base gap-3 mt-2 text-gray-700">
                   <p className="text-lg">
                     {currency}
-                    {product.amount}
+                    {product.price}
                   </p>
-                  <p>Quantity:{product.quantity}</p>
-                  <p>Size:{product.size}</p>
+                  <p>Quantity: {product.quantity}</p>
+                  <p>Sizes: {product.sizes.join(", ")}</p>
                 </div>
                 <p className="mt-2">
                   Date:{" "}
