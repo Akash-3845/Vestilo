@@ -11,6 +11,7 @@ const Collection = () => {
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
   const [sortType, setSortType] = useState("relavent");
+
   const toggleCategory = (e) => {
     if (category.includes(e.target.value)) {
       setCategory((prev) => prev.filter((item) => item !== e.target.value));
@@ -46,22 +47,23 @@ const Collection = () => {
         subCategory.includes(item.subcategory)
       );
     }
+
     setFilterProducts(productsCopy);
   };
 
-  const sortProducts = () => {
-    let fpCopy = filterProducts.slice();
+  const sortProducts = (items) => {
+    let sortedItems = [...items];
     switch (sortType) {
       case "low-high":
-        setFilterProducts(fpCopy.sort((a, b) => a.price - b.price));
+        sortedItems.sort((a, b) => a.price - b.price);
         break;
       case "high-low":
-        setFilterProducts(fpCopy.sort((a, b) => b.price - a.price));
+        sortedItems.sort((a, b) => b.price - a.price);
         break;
       default:
-        applyFilter();
         break;
     }
+    return sortedItems;
   };
 
   useEffect(() => {
@@ -70,9 +72,9 @@ const Collection = () => {
   }, [category, subCategory, search, showSearch, products]);
 
   useEffect(() => {
-    sortProducts();
+    setFilterProducts((prev) => sortProducts(prev));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [products]);
+  }, [sortType]);
 
   return (
     <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
@@ -127,6 +129,7 @@ const Collection = () => {
             </p>
           </div>
         </div>
+
         {/* Sub Category Filter */}
         <div
           className={`border border-gray-300 pl-5 py-3 mt-6 ${
@@ -165,6 +168,7 @@ const Collection = () => {
           </div>
         </div>
       </div>
+
       {/* Products List */}
       <div className="flex-1">
         <div className="flex justify-between text-base sm:text-2xl mb-4">
@@ -181,7 +185,7 @@ const Collection = () => {
         </div>
         {/* Map Products */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6">
-          {filterProducts.map((item, index) => (
+          {sortProducts(filterProducts).map((item, index) => (
             <ProductItem
               key={index}
               name={item.name}

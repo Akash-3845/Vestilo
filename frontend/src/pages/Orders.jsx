@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import { format } from "date-fns";
 
@@ -48,7 +47,12 @@ const Orders = () => {
           });
         });
 
-        setOrderData(Object.values(groupedOrders));
+        // ✅ Sort by date (newest first)
+        const sortedOrders = Object.values(groupedOrders).sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+
+        setOrderData(sortedOrders);
       }
     } catch (error) {
       console.log(error);
@@ -75,7 +79,7 @@ const Orders = () => {
               <img
                 className="w-16 sm:w-20"
                 src={product.image[0]}
-                alt="product image"
+                alt="product"
               />
               <div>
                 <p className="sm:text-base font-medium">{product.name}</p>
