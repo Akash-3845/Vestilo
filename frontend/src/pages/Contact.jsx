@@ -17,10 +17,10 @@ const Contact = () => {
         <div className="flex flex-col justify-center items-start gap-6 ">
           <p className="font-semibold text-xl text-gray-600">Our Store</p>
           <p className="text-gray-500">
-            54709 Willms Station <br /> Suite 350 Washington, USA
+            Sector 44 Botanical Garden <br /> Noida, Uttar Pradesh, India
           </p>
           <p className="text-gray-500">
-            Tel: (415) 555-0132 <br />
+            Tel: (+91) 884-5828947 <br />
             Email: admin@vestilo.com
           </p>
           <p className="font-semibold text-xl text-gray-600">
